@@ -8,7 +8,7 @@ MAVEN_INSTALL_PATH=$SOFTWARE_HOME/maven
 
 if [ ! -f apache-maven.tar.gz ]; then
 	echo "开始下载maven"
-	wget -O apache-maven.tar.gz https://github.com/lichong5258623/lc-studay-data/raw/master/software/envs/apache-maven-3.6.2-bin.tar.gz
+	wget -O apache-maven.tar.gz http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 fi
 if [ ! -f apache-maven.tar.gz ]; then
 	echo "maven下载失败..退出"

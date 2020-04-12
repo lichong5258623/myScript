@@ -8,7 +8,7 @@ JDK_SERVER_PATH=$SOFTWARE_HOME/jdk-server
 
 if [ ! -f jdk_server.tar.gz ]; then
 	echo "jdk不存在下载jdk"
-	wget -O jdk_server.tar.gz https://github.com/lichong5258623/lc-studay-data/raw/master/software/envs/OpenJDK8U-jdk_x64_linux_hotspot_8u222b10.tar.gz
+	wget -O jdk_server.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u242-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u242b08.tar.gz
 fi
 
 if [ ! -f jdk_server.tar.gz ]; then
