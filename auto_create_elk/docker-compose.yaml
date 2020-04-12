@@ -1,0 +1,61 @@
+version: '3.1'
+
+services:
+  elasticsearch:
+    image: elasticsearch:6.8.8
+    container_name: elasticsearch
+    ports:
+      - "29200:9200"
+      - "29300:9300"
+    environment: #设置镜像变量，它可以保存变量到镜像里面
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    volumes:
+      - /usr/share/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
+    restart: always
+  logstash:
+    image: logstash:6.8.8
+    container_name: logstash
+    ports:
+      - "25044:5044"
+      - "29600:9600"
+      - "28888:8888"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    volumes:
+      - /usr/share/logstash/pipeline:/usr/share/logstash/pipeline
+    restart: always
+  kibana:
+    image: kibana:6.8.8
+    container_name: kibana
+    ports:
+      - "25601:5601"
+    networks:
+      - elk
+    depends_on:
+    - elasticsearch
+    restart: always
+  # filebeat:
+  #   hostname: filebeat
+  #   image: weschen/filebeat
+  #   build:
+  #     context: filebeat
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     # needed to access all docker logs (read only) :
+  #     - "/var/lib/docker/containers:/usr/share/dockerlogs/data:ro"
+  #     # needed to access additional informations about containers
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #   networks:
+  #     - elk
+  #   depends_on:
+  #     - logstash
+networks:
+  elk:
+    driver: bridge
