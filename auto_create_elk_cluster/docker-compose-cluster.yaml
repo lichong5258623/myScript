@@ -1,0 +1,95 @@
+version: '3.1'
+
+services:
+  elasticsearch01:
+    image: elasticsearch:7.6.2
+    container_name: elasticsearch01
+    ports:
+      - "29201:9200"
+      - "29301:9300"
+    environment: #设置镜像变量，它可以保存变量到镜像里面
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    volumes:
+      - /usr/share/elasticsearch01/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /usr/share/elasticsearch01/data:/usr/share/elasticsearch/data
+    restart: always
+  elasticsearch02:
+    image: elasticsearch:7.6.2
+    container_name: elasticsearch02
+    ports:
+      - "29202:9200"
+      - "29302:9300"
+    environment: #设置镜像变量，它可以保存变量到镜像里面
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    volumes:
+      - /usr/share/elasticsearch02/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /usr/share/elasticsearch02/data:/usr/share/elasticsearch/data
+    restart: always
+  elasticsearch03:
+    image: elasticsearch:7.6.2
+    container_name: elasticsearch03
+    ports:
+      - "29203:9200"
+      - "29303:9300"
+    environment: #设置镜像变量，它可以保存变量到镜像里面
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    volumes:
+      - /usr/share/elasticsearch03/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /usr/share/elasticsearch03/data:/usr/share/elasticsearch/data
+    restart: always
+  logstash:
+    image: logstash:7.6.2
+    container_name: logstash
+    ports:
+      - "25044:5044"
+      - "29600:9600"
+      - "28888:8888"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch01
+      - elasticsearch02
+      - elasticsearch03
+    volumes:
+      - /usr/share/logstash/pipeline:/usr/share/logstash/pipeline
+    restart: always
+  kibana:
+    image: kibana:7.6.2
+    container_name: kibana
+    ports:
+      - "25601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch01
+      - elasticsearch02
+      - elasticsearch03
+    volumes:
+      - /usr/share/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    restart: always
+  # filebeat:
+  #   hostname: filebeat
+  #   image: weschen/filebeat
+  #   build:
+  #     context: filebeat
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     # needed to access all docker logs (read only) :
+  #     - "/var/lib/docker/containers:/usr/share/dockerlogs/data:ro"
+  #     # needed to access additional informations about containers
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #   networks:
+  #     - elk
+  #   depends_on:
+  #     - logstash
+networks:
+  elk:
+    driver: bridge
