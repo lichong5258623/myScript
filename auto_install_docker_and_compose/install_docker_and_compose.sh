@@ -26,7 +26,7 @@ echo"docker安装完毕，开始安装docker-compose"
 if [ !-f docker-compose ];then
     curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` -o docker-compose
 fi
-mv docker-compose /usr/local/
+mv docker-compose /usr/local/bin/
 chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 echo "安装完毕"
